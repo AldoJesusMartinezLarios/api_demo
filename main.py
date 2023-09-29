@@ -1,5 +1,5 @@
 # Importar la clase FastAPI del módulo fastapi
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 
 # Importar el módulo csv para trabajar con archivos CSV
 import csv
@@ -8,8 +8,19 @@ import csv
 app = FastAPI()
 
 # Definir un manejador de ruta para la raíz ("/"). Esto responderá a las solicitudes HTTP GET en la ruta raíz.
-@app.get("/")
+@app.get(
+    "/", 
+    status_code=status.HTTP_200_OK,
+    summary="Endpoint raìz"
+    )
+    
 async def root():
+    """
+    # Endpoint raiz
+    ## 1 - Status code
+    * 289 -
+    * 301 -
+    """
     # Devolver un diccionario JSON como respuesta con un mensaje
     return {"message": "Hello World"}
 
