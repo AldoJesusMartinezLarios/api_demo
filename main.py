@@ -25,8 +25,17 @@ async def root():
     return {"message": "Hello World"}
 
 # Definir un manejador de ruta para la ruta "/v1/contactos". Esto responderá a las solicitudes HTTP GET en esa ruta.
-@app.get("/v1/contactos")
+@app.get(
+    "/v1/contactos",
+    status_code=status.HTTP_200_OK,
+    summary="Obtener Contactos")
+
 async def get_contactos():
+    """
+    # Obtener la lista de contactos
+    ## 1 - Status Code
+    * 200 - OK
+    """
     # Crear una lista llamada "contactos" para almacenar los datos del archivo CSV
     contactos = []
 
@@ -42,3 +51,16 @@ async def get_contactos():
 
     # Devolver la lista de "contactos" como respuesta. FastAPI automáticamente convertirá esto a JSON.
     return contactos
+
+
+@app.post(
+    "/v1/contactos",
+    status_code=status.HTTP_201_CREATED,
+    summary="Crear un nuevo contacto")
+
+async def post_contactos():
+    """
+    # Crear contacto
+    ## 1 - Status Code
+    * 201 - Created
+    """
