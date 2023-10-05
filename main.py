@@ -1,66 +1,65 @@
-# Importar la clase FastAPI del módulo fastapi
-from fastapi import FastAPI, status
-
-# Importar el módulo csv para trabajar con archivos CSV
+from fastapi import FastAPI, HTTPException, Request, status
+from pydantic import BaseModel
 import csv
 
-# Crear una instancia de FastAPI
 app = FastAPI()
 
-# Definir un manejador de ruta para la raíz ("/"). Esto responderá a las solicitudes HTTP GET en la ruta raíz.
-@app.get(
-    "/", 
-    status_code=status.HTTP_200_OK,
-    summary="Endpoint raìz"
-    )
-    
+@app.get("/", 
+    status_code=status.HTTP_201_CREATED,
+    description="Endpoint raiz de la Api Contactos",
+    summary="Endpoint raiz")
 async def root():
     """
-    # Endpoint raiz
-    ## 1 - Status code
-    * 289 -
-    * 301 -
+    #Endpoint raiz
+        ##Status code
+        *201 created
     """
-    # Devolver un diccionario JSON como respuesta con un mensaje
     return {"message": "Hello World"}
 
-# Definir un manejador de ruta para la ruta "/v1/contactos". Esto responderá a las solicitudes HTTP GET en esa ruta.
 @app.get(
-    "/v1/contactos",
-    status_code=status.HTTP_200_OK,
-    summary="Obtener Contactos")
-
+    "/v1/contactos", 
+    status_code=status.HTTP_201_CREATED,
+    description="Endpoint para listar contactos en la Api Contactos",
+    summary="Endpoint para listar cotactos")
 async def get_contactos():
-    """
-    # Obtener la lista de contactos
-    ## 1 - Status Code
-    * 200 - OK
-    """
-    # Crear una lista llamada "contactos" para almacenar los datos del archivo CSV
+    
+    # Define la ruta de tu archivo CSV
+    archivo_contactos = "contactos.csv"
+
+    # Inicializa una lista para almacenar los datos de contacto
     contactos = []
 
-    # Abrir el archivo CSV llamado "contactos.csv" en modo lectura (mode="r") y UTF-8 (encoding="utf-8")
-    with open("contactos.csv", mode="r", encoding="utf-8") as file:
-        # Crear un lector CSV que trate el archivo como un diccionario (cada fila es un diccionario)
+    # Lee los datos del archivo CSV y los impríme
+    with open(archivo_contactos, mode='r', encoding='utf-8') as file:
         csv_reader = csv.DictReader(file)
-
-        # Iterar sobre las filas del archivo CSV
         for row in csv_reader:
-            # Agregar cada fila (diccionario) a la lista de "contactos"
             contactos.append(row)
+            print(row)  # Imprime cada fila
 
-    # Devolver la lista de "contactos" como respuesta. FastAPI automáticamente convertirá esto a JSON.
-    return contactos
+    return {"contactos": contactos}
 
+# Define el modelo Pydantic para los contactos
+class Contacto(BaseModel):
+    nombre: str
+    email: str
 
+# Nueva ruta y función para el método POST
 @app.post(
-    "/v1/contactos",
+    "/v1/contactos", 
     status_code=status.HTTP_201_CREATED,
-    summary="Crear un nuevo contacto")
+    description="Endpoint para agregar un nuevo contacto",
+    summary="Endpoint para agregar un nuevo contacto")
 
-async def post_contactos():
-    """
-    # Crear contacto
-    ## 1 - Status Code
-    * 201 - Created
-    """
+async def agregar_contacto(contacto: Contacto):
+    nuevo_contacto = {
+        "nombre": contacto.nombre,
+        "email": contacto.email,
+    }
+
+    archivo_contactos = "contactos.csv"
+    with open(archivo_contactos, mode='a', encoding='utf-8', newline='') as file:
+        fieldnames = ["nombre", "email"]  # Agrega más campos si es necesario
+        csv_writer = csv.DictWriter(file, fieldnames=fieldnames)
+        csv_writer.writerow(nuevo_contacto)
+
+    return {"mensaje": "Contacto agregado correctamente"}
