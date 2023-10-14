@@ -146,3 +146,4 @@ async def get_contactos(search: str = Query(...)):
                 contactos.append(row)
 
     return {"contactos": contactos}
+
