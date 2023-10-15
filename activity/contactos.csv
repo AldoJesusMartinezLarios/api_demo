@@ -1,7 +1,3 @@
-nombre,email
-Aldo,aldobello@gmail.com
-Atxel,atxelguapo@gmail.com
-Brandon,brandon@gmail.com
-string,string
-nando,gamer@gmail.com
-testing,testing@gmail.com
+id_contacto,nombre,primer_apellido,segundo_apellido,email,telefono
+1,Aldo Jesus,Martinez,Larios,aldo123@gmail.com,7751234567
+2,Ana Celia,de Armas,Caso,ana_armas@gmail.com,7750000000
